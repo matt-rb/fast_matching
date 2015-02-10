@@ -5,14 +5,12 @@
 
 %----- tools
 addpath(genpath('tools'));
-
-
-%----- SIFT
 addpath(genpath('sift'));
 
-%----- itq
-addpath(genpath('itq'));
 
+%----- methods
+addpath(genpath('itq'));
+addpath(genpath('kmeans'));
 
 %----- Install SIFT
 %sift_compile
