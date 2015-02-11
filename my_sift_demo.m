@@ -9,16 +9,16 @@ n_iter = 5;
 
 %I_ref = imread(ref_img_root);
 %[kps_ref,desc_ref]=sift(rgb2gray(I_ref));
-kps_ref = kps(1:2,62736:813679);
-desc_ref= kps(4:131,62736:813679);
+kps_ref = kps(1:2,8001:813679);
+desc_ref= kps(4:131,8001:813679);
 
 %I_des = imread(des_img_root);
 %[kps_des,desc_des]=sift(rgb2gray(I_des));
-kps_des = kps(1:2,1:62735);
-desc_des= kps(4:131,1:62735);
+kps_des = kps(1:2,1:8000);
+desc_des= kps(4:131,1:8000);
 
 tic ;
-%matches=siftmatch( desc_ref, desc_des ) ;
+matches=siftmatch( desc_ref, desc_des ) ;
 fprintf('SIFT-Matching in %.3f s\n', toc) ;
 
 %figure(1) ; clf ;
