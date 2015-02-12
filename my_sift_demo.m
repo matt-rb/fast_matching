@@ -84,4 +84,5 @@ fprintf('Hash-Matching AVG-distance %.3f \n', avg_err) ;
 
 %matches = [1:size(kps_ref,2); 1:size(kps_ref,2)]; 
 %figure(2) ; clf ;
-%                                                                                                                                                                                                                                                                                                                                                                                                                                                   plotmatches(rgb2gray(I_ref),rgb2gray(I_des),kps_ref(1:2,:),kps_des(1:2,:),matches) ;
+%plotmatches(rgb2gray(I_ref),rgb2gray(I_des),kps_ref(1:2,:),kps_des(1:2,:),matches) ;
+%drawnow ;                                                                                                                                                                                                                                                                                                                                                                                                                                                plotmatches(rgb2gray(I_ref),rgb2gray(I_des),kps_ref(1:2,:),kps_des(1:2,:),matches) ;
