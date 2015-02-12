@@ -4,21 +4,21 @@ startup;
 ref_img_root='data/ref.jpg';
 des_img_root='data/des.jpg';
 load('kps.mat');
-pca_size = 3;
+pca_size = 8;
 n_iter = 5;
 
-I_ref = imread(ref_img_root);
-[kps_ref,desc_ref]=sift(rgb2gray(I_ref));
-%kps_ref = kps(1:2,8001:813679);
-%desc_ref= kps(4:131,8001:813679);
+%I_ref = imread(ref_img_root);
+%[kps_ref,desc_ref]=sift(rgb2gray(I_ref));
+kps_ref = kps(1:2,8001:813679);
+desc_ref= kps(4:131,8001:813679);
 
-I_des = imread(des_img_root);
-[kps_des,desc_des]=sift(rgb2gray(I_des));
-%kps_des = kps(1:2,1:8000);
-%desc_des= kps(4:131,1:8000);
+%I_des = imread(des_img_root);
+%[kps_des,desc_des]=sift(rgb2gray(I_des));
+kps_des = kps(1:2,1:8000);
+desc_des= kps(4:131,1:8000);
 
 tic ;
-matches=siftmatch( desc_ref, desc_des ) ;
+%matches=siftmatch( desc_ref, desc_des ) ;
 fprintf('SIFT-Matching in %.3f s\n', toc) ;
 
 
@@ -26,11 +26,11 @@ fprintf('SIFT-Matching in %.3f s\n', toc) ;
 %figure(1) ; clf ;
 %plotmatches(rgb2gray(I_ref),rgb2gray(I_des),kps_ref(1:2,:),kps_des(1:2,:),matches) ;
 %drawnow ;
-fprintf('No. Ref Kps %d \nNo. Test Kps %d \nNo. Matches %d \n ', size(desc_ref,2), size(desc_des,2), size(matches,2) ) ;
+%fprintf('No. Ref Kps %d \nNo. Test Kps %d \nNo. Matches %d \n ', size(desc_ref,2), size(desc_des,2), size(matches,2) ) ;
 
-v = sqrt(sum((desc_des(:,matches(2,:)) - desc_ref(:,matches(1,:))) .^ 2));
-avg_err = sum(v)/size(v,2);
-fprintf('SIFT-Matching AVG-distance %.3f \n', avg_err) ;
+%v = sqrt(sum((desc_des(:,matches(2,:)) - desc_ref(:,matches(1,:))) .^ 2));
+%avg_err = sum(v)/size(v,2);
+%fprintf('-- SIFT-Matching AVG-distance %.3f \n', avg_err) ;
 
 
 [ bin_vect,itq_rot_mat,pca_mapping, mean_data ] = train_itq( pca_size, n_iter, desc_ref' );
@@ -60,7 +60,7 @@ desc_des = [];
 
 fprintf('Hash-Matching\n') ;
 for i=1:size(hash_table,1)
-    fprintf('Hash Level %d \n', i) ;
+    %fprintf('Hash Level %d \n', i) ;
     if size(cell2mat(table_des(i,1)),1) >0 && size(cell2mat(hash_table(i,1)),1) >0
     matches=siftmatch( cell2mat(hash_table(i,1))', cell2mat(table_des(i,1))' ) ;
     no_mtch = size(matches,2) + no_mtch;
@@ -74,13 +74,14 @@ for i=1:size(hash_table,1)
     desc_des = [desc_des , temp_desc_des(:,matches(2,:))];
     end
 end
-fprintf('Hash-Matching in %.3f s\n', toc) ;
+                    
+fprintf('-- Hash-Matching in %.3f s\n', toc) ;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 fprintf('No. Matches %d \n ', no_mtch ) ;
 
 v = sqrt(sum((desc_des(:,:) - desc_ref(:,:)) .^ 2));
 avg_err = sum(v)/size(v,2);
 fprintf('Hash-Matching AVG-distance %.3f \n', avg_err) ;
 
-% matches = [1:size(kps_ref,2); 1:size(kps_ref,2)]; 
-% figure(2) ; clf ;
-% plotmatches(rgb2gray(I_ref),rgb2gray(I_des),kps_ref(1:2,:),kps_des(1:2,:),matches) ;
+%matches = [1:size(kps_ref,2); 1:size(kps_ref,2)]; 
+%figure(2) ; clf ;
+%                                                                                                                                                                                                                                                                                                                                                                                                                                                   plotmatches(rgb2gray(I_ref),rgb2gray(I_des),kps_ref(1:2,:),kps_des(1:2,:),matches) ;
