@@ -4,7 +4,7 @@ startup;
 ref_img_root='data/ref.jpg';
 des_img_root='data/des.jpg';
 load('kps.mat');
-pca_size = 3;
+pca_size = 6;
 n_iter = 5;
 
 %I_ref = imread(ref_img_root);
@@ -17,9 +17,11 @@ desc_ref= kps(4:131,8001:813679);
 kps_des = kps(1:2,1:8000);
 desc_des= kps(4:131,1:8000);
 
-tic ;
+tic;
 matches=siftmatch( desc_ref, desc_des ) ;
 fprintf('SIFT-Matching in %.3f s\n', toc) ;
+
+save('matche-SIFT', matches);
 
 %figure(1) ; clf ;
 %plotmatches(rgb2gray(I_ref),rgb2gray(I_des),kps_ref(1:2,:),kps_des(1:2,:),matches) ;
@@ -28,16 +30,21 @@ fprintf('SIFT-Matching in %.3f s\n', toc) ;
 
 [ bin_vect,itq_rot_mat,pca_mapping, mean_data ] = train_itq( pca_size, n_iter, desc_ref' );
 
+
+tic;
 fprintf('Make Reference Hash Table... ') ;
 hash_table = make_hash_table( bin_vect, desc_ref', kps_ref');
-fprintf('DONE\n') ;
+fprintf(' DONE\n') ;
+fprintf('Reference Hash in %.3f s\n', toc) ;
 
+tic;
 fprintf('Make Query Hash Table... ') ;
 bin_des = test_itq( desc_des', itq_rot_mat, pca_mapping);
 
 
 table_des = make_hash_table( bin_des, desc_des', kps_des');
-fprintf('DONE\n') ;
+fprintf(' DONE\n') ;
+fprintf('Query Hash in %.3f s\n', toc) ;
 
 no_mtch=0;
 
