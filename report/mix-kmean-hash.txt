@@ -1,0 +1,9 @@
+There are 2main ideas which already we are experimenting.
+
+First Idea:
+Using kmeans classifier on first level, assigning cluster labels to each train sample. Afterward inside of each cluster build up a hash table. So, when a query comes with few number of calculation firstly assign the cluster label (regards to distance from train cluster centroids), and then referring to the hash-table inside the cluster and perform SIFT matching (same as Hash-matching method expriment).
+
+
+Second Idea:
+Actually two-levels hashing, or voting technique. In the first level we have large-bit hash-table binary code (main table), it will divided to several sub-tables (we called voting tables or sub-hash tables). Once a query comes, we calculate large-binary vector, then each table votes to the correspond part of binary vector from query. Based on frequency of votes from voting tables to each query sample we reduce the matching area.
+-Note: If we choose appropriate binary size, it would be even possible to disregard SIFT-matching phase and just use these votes within a ranked list and select the N-top ranked train sample as matches.

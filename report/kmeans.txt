@@ -1,0 +1,37 @@
+Expriment with k-means Detail:
+
+we tried 6 diffrente cluster size on k-means 8, 16, 32 and 64 clusters
+
+In train phase all the descriptors (Nx128) from reference clustered and labeled with k-means (using a customised function on matlab), compute centroid of each individual cluster, and store them.
+
+In test phase, with a given query descriptors (Mx128), we first find the nearest cluster for each sample and assign the cluster label to them (computed distance from centroid of each cluster and choose the minimum distance). Afterward, perform SIFT-Matching between descriptor in each correspond pair cluster from train set(reference) and query sample.
+
+The Results are as following:
+
+No. Ref Kps 502 
+No. Test Kps 434 
+
+
+-- SIFT-Matching in 0.123 s
+No. Matches 241
+SIFT-Matching AVG-distance 0.259 
+
+
+-- Kmeans-Matching with 8 Cluster in 0.024 s
+No. Matches 229 
+Kmeans-Matching AVG-distance 0.262
+
+-- Kmeans-Matching with 16 Cluster in 0.021 s
+No. Matches 228 
+Kmeans-Matching AVG-distance 0.263
+
+-- Kmeans-Matching with 32 Cluster in 0.014 s
+No. Matches 230 
+Kmeans-Matching AVG-distance 0.265 
+
+-- Kmeans-Matching with 64 Cluster in 0.013 s
+No. Matches 237 
+Kmeans-Matching AVG-distance 0.290 
+
+Note: Still not test on huge dataset, but time is almost the same as hashing.
+Visualize matching:
