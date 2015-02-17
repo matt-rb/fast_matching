@@ -4,7 +4,7 @@ close all;
 startup;
 ref_img_root='data/ref.jpg';
 des_img_root='data/des.jpg';
-kmeans_size = 16;
+kmeans_size = 8;
 load('kps.mat');
 
 % I_ref = imread(ref_img_root);
