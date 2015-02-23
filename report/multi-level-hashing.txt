@@ -1,0 +1,52 @@
+I've implemented multi level hashing with following details
+
+main table 64/32-bit
+sub-tables (voting tables)  8/4-bit
+
+the primitive results are not as good as expected:
+
+
+-- Multi-Hash Matching (binary size main/sub 64/8):
+Multi-Hash in 0.003 s
+Multi-Hash AVG-distance 0.735
+
+-- Multi-Hash Matching (binary size main/sub 64/4):
+Multi-Hash in 0.004 s
+Multi-Hash AVG-distance 0.614
+
+-- Multi-Hash Matching (binary size main/sub 32/8):
+Multi-Hash in 0.002 s
+Multi-Hash AVG-distance 0.693
+
+-- Multi-Hash Matching (binary size main/sub 32/4):
+Multi-Hash in 0.003 s
+Multi-Hash AVG-distance 0.577
+
+
+
+I believe there is some bugs in the code, or voting policy.
+currently voting policy is like each sub-table votes to correspond part of binary vector from given query, if 80% of sub-tables votes to individual train sample it would be selected as candidate for matching, after collecting all the candidates, we make a ranked list regarding to frequency, afterward choose the first 20% of high ranked candidate and perform SIFT-matching between them and given query sample.
+
+PS: hash-tables and matching is on SIFT descriptors.
+the timing is good but the average distance is too high, so i do believe somewhere in assigning binaries or making sub-tables could be the possible cause of the issue.
+
+
+
+-- Kmeans-hash Matching with 8 Cluster and hash 3-bit in 7.959 s
+Kmeans-hash Matching AVG-distance 316.132 
+
+-- Kmeans-hash Matching with 8 Cluster and hash 6-bit in 12.141 s
+Kmeans-hash Matching AVG-distance 367.175 
+
+-- Kmeans-hash Matching with 16 Cluster and hash 3-bit in 6.298 s
+Kmeans-hash Matching AVG-distance 324.321 
+
+-- Kmeans-hash Matching with 16 Cluster and hash 6-bit in 17.483 s
+Kmeans-hash Matching AVG-distance 416.955 
+
+-- Kmeans-hash Matching with 32 Cluster and hash 3-bit in 4.913 s
+Kmeans-hash Matching AVG-distance 335.784 
+
+-- Kmeans-hash Matching with 32 Cluster and hash 6-bit in 66.428 s
+Kmeans-hash Matching AVG-distance 457.434 
+
