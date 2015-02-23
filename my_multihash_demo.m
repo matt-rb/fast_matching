@@ -4,8 +4,8 @@ startup;
 ref_img_root='data/ref.jpg';
 des_img_root='data/des.jpg';
 %load('kps.mat');
-pca_size = 21;
-sub_table_size = 3;
+pca_size = 12;
+sub_table_size = 2;
 n_iter = 5;
 
 I_ref = imread(ref_img_root);
@@ -19,7 +19,7 @@ I_des = imread(des_img_root);
 % desc_des= kps(4:131,1:8000);
 
 tic ;
-%matches=siftmatch( desc_ref, desc_des ) ;
+matches=siftmatch( desc_ref, desc_des ) ;
 fprintf('SIFT-Matching in %.3f s\n', toc) ;
 
 
@@ -29,9 +29,9 @@ fprintf('SIFT-Matching in %.3f s\n', toc) ;
 %drawnow ;
 %fprintf('No. Ref Kps %d \nNo. Test Kps %d \nNo. Matches %d \n ', size(desc_ref,2), size(desc_des,2), size(matches,2) ) ;
 
-%v = sqrt(sum((desc_des(:,matches(2,:)) - desc_ref(:,matches(1,:))) .^ 2));
-%avg_err = sum(v)/size(v,2);
-%fprintf('-- SIFT-Matching AVG-distance %.3f \n', avg_err) ;
+v = sqrt(sum((desc_des(:,matches(2,:)) - desc_ref(:,matches(1,:))) .^ 2));
+avg_err = sum(v)/size(v,2);
+fprintf('-- SIFT-Matching AVG-distance %.3f \n', avg_err) ;
 
 
 [ bin_vect,itq_rot_mat,pca_mapping, mean_data ] = train_itq( pca_size, n_iter, desc_ref' );
@@ -66,27 +66,44 @@ kps_ref = [];
 kps_des_matched =[];
 desc_ref = [];
 desc_des_matched = [];
-
+no_of_samples=[];
 fprintf('MultiHash Matching\n') ;
 
 for i=1:size(ranked_list,1)
     hash_idx= ranked_list{i}(1,1);
     if(size(hash_table{hash_idx,1},1)>0)
-        desc_ref=[desc_ref , hash_table{hash_idx,1}(1,:)'];
-        kps_ref=[kps_ref , hash_table{hash_idx,2}(1,:)'];
-        kps_des_matched = [kps_des_matched , kps_des(:,i)];
-        desc_des_matched = [desc_des_matched , desc_des(:,i)];
+        
+%         if (size(hash_table{hash_idx,1},1)>1)
+%             min_idx  = find_min_distance_idx( desc_des(:,i), hash_table{hash_idx,1}' );
+%             desc_ref=[desc_ref , hash_table{hash_idx,1}(min_idx,:)'];
+%             kps_ref=[kps_ref , hash_table{hash_idx,2}(min_idx,:)'];
+%         else
+%             desc_ref=[desc_ref , hash_table{hash_idx,1}(1,:)'];
+%             kps_ref=[kps_ref , hash_table{hash_idx,2}(1,:)'];
+%         end
+        min_idx  = find_min_distance_idx( desc_des(:,i), hash_table{hash_idx,1}' );
+        if (min_idx>0)
+            desc_ref=[desc_ref , hash_table{hash_idx,1}(min_idx,:)'];
+            kps_ref=[kps_ref , hash_table{hash_idx,2}(min_idx,:)'];
+            kps_des_matched = [kps_des_matched , kps_des(:,i)];
+            desc_des_matched = [desc_des_matched , desc_des(:,i)];
+            no_mtch = no_mtch + 1;
+        end
+        
     end
 end
-                    
+
+matches = [1:size(kps_ref,2); 1:size(kps_ref,2)];
+%matches=siftmatch( desc_des_matched, desc_ref ) ;
+%no_mtch = size(matches);
 fprintf('-- MultiHash Matching in %.3f s\n', toc) ;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 fprintf('No. Matches %d \n ', no_mtch ) ;
 
-v = sqrt(sum((desc_des_matched(:,:) - desc_ref(:,:)) .^ 2));
+v = sqrt(sum((desc_des_matched(:,matches(1,:)) - desc_ref(:,matches(2,:))) .^ 2));
 avg_err = sum(v)/size(v,2);
 fprintf('Hash-Matching AVG-distance %.3f \n', avg_err) ;
 
-matches = [1:size(kps_ref,2); 1:size(kps_ref,2)]; 
+ 
 figure(2) ; clf ;
-plotmatches(rgb2gray(I_ref),rgb2gray(I_des),kps_ref(1:2,:),kps_des_matched(1:2,:),matches) ;
-drawnow ;                                                                                                                                                                                                                                                                                                                                                                                                                                                plotmatches(rgb2gray(I_ref),rgb2gray(I_des),kps_ref(1:2,:),kps_des(1:2,:),matches) ;
+plotmatches(rgb2gray(I_des),rgb2gray(I_ref),kps_des_matched(1:2,:),kps_ref(1:2,:),matches) ;
+%drawnow ;                                                                                                                                                                                                                                                                                                                                                                                                                                                plotmatches(rgb2gray(I_ref),rgb2gray(I_des),kps_ref(1:2,:),kps_des(1:2,:),matches) ;
